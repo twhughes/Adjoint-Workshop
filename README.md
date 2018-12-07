@@ -111,40 +111,40 @@ Npml = (10, 10)
 
 Now that our source and domain are defined, we may use FDFD to solve for the electromagnetic fields.
 
-Assuming an anisotripic, reciprocal, and non-magnetic system (most normal cases) FDFD solves for the fields at a given frequency $\omega$ by solving the equation
+Assuming an anisotripic, reciprocal, and non-magnetic system (most normal cases) FDFD solves for the fields at a given frequency <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/ae4fb5973f393577570881fc24fc2054.svg?invert_in_darkmode" align=middle width=10.82192594999999pt height=14.15524440000002pt/> by solving the equation
 
-$$ \frac{1}{\mu_0}\nabla \times \nabla \times E(r) - \omega^2\epsilon_0  \epsilon_r(r) E(r) = i\omega J(r)$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/2758016ca71a696079afe6765dcf535d.svg?invert_in_darkmode" align=middle width=311.01482939999994pt height=36.1865163pt/></p>
 
-for the electric fields $E(r)$.  This equation is derived straightforwardly from the steady state (single $\omega$) Maxwell's equations.
+for the electric fields <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/01397eef679b7e7b92167e765c1c414c.svg?invert_in_darkmode" align=middle width=33.74056619999999pt height=24.65753399999998pt/>.  This equation is derived straightforwardly from the steady state (single <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/ae4fb5973f393577570881fc24fc2054.svg?invert_in_darkmode" align=middle width=10.82192594999999pt height=14.15524440000002pt/>) Maxwell's equations.
 
-FDFD does this by representing the electric fields, permittivity distributions, and source on a [Yee lattice](https://meep.readthedocs.io/en/latest/Yee_Lattice/) and then expressing the $\nabla \times \nabla \times$ operator as finite difference derivative matrix, $\hat{D}$.
+FDFD does this by representing the electric fields, permittivity distributions, and source on a [Yee lattice](https://meep.readthedocs.io/en/latest/Yee_Lattice/) and then expressing the <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/775af2dfac29c4cd9b42d2993f6e7e3e.svg?invert_in_darkmode" align=middle width=60.27396869999999pt height=22.465723500000017pt/> operator as finite difference derivative matrix, <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/c78e3e85881c66b66dda99243f0da8bd.svg?invert_in_darkmode" align=middle width=14.06623184999999pt height=31.141535699999984pt/>.
 
 In the discrete case, we may write our original equation as a big matrix equation:
 
-$$ \left[\hat{D} - \omega^2\epsilon_0 \hat{\epsilon}_r \right] \mathbf{E} = i\omega \mathbf{J}$$
-$$ \equiv \hat{A}\mathbf{E} = \mathbf{b}$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/5c2a598067749e4d30d9f4ca355b73b8.svg?invert_in_darkmode" align=middle width=159.21151949999998pt height=29.58934275pt/></p>
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/9c512e43971bf7219a30c97ccf464779.svg?invert_in_darkmode" align=middle width=74.520204pt height=15.570767849999998pt/></p>
 
 Let's break down the terms here:
-* $\hat{D}$ is a real-valued matrix that performs the finite difference derivative $\frac{1}{\mu_0}\nabla \times \nabla \times$.  It does not depend on our permittivity distribution.
-* $\hat{\epsilon}_r$ is a **diagonal** complex-valued matrix.  Each element along the diagonal corresponds to the relative permittivity of one cell in our domain.  Although the underlying relative permittivity may be real-valued, it becomes complex when PMLs are added as the system now has loss.
-* $\mathbf{E}$ is a complex vector representing the (unknown) electric field distribution in the domain.
-* $\mathbf{b}$ is a complex vector representing the driving current source distribution.
+* <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/c78e3e85881c66b66dda99243f0da8bd.svg?invert_in_darkmode" align=middle width=14.06623184999999pt height=31.141535699999984pt/> is a real-valued matrix that performs the finite difference derivative <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/0ee00535db8eb75296cd75007579835c.svg?invert_in_darkmode" align=middle width=76.65503505pt height=27.77565449999998pt/>.  It does not depend on our permittivity distribution.
+* <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/54ebc7af6ca66c4aec97af90166a3c4c.svg?invert_in_darkmode" align=middle width=13.12984034999999pt height=22.831056599999986pt/> is a **diagonal** complex-valued matrix.  Each element along the diagonal corresponds to the relative permittivity of one cell in our domain.  Although the underlying relative permittivity may be real-valued, it becomes complex when PMLs are added as the system now has loss.
+* <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/ae48dff45ab57dda34b441bc7904377a.svg?invert_in_darkmode" align=middle width=12.420021899999991pt height=22.55708729999998pt/> is a complex vector representing the (unknown) electric field distribution in the domain.
+* <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/a10ec92d13e76a02b538967f6b90b345.svg?invert_in_darkmode" align=middle width=10.502226899999991pt height=22.831056599999986pt/> is a complex vector representing the driving current source distribution.
 
-**NOTE 1:** $\hat{\epsilon}_r$, $\mathbf{E}$, and $\mathbf{b}$ are **flattened** representations of the original objects in 2D or 3D.  They must therefore each be flattened according to the same procedure, such as   `E_vec = E(:)`   in matlab.
+**NOTE 1:** <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/54ebc7af6ca66c4aec97af90166a3c4c.svg?invert_in_darkmode" align=middle width=13.12984034999999pt height=22.831056599999986pt/>, <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/ae48dff45ab57dda34b441bc7904377a.svg?invert_in_darkmode" align=middle width=12.420021899999991pt height=22.55708729999998pt/>, and <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/a10ec92d13e76a02b538967f6b90b345.svg?invert_in_darkmode" align=middle width=10.502226899999991pt height=22.831056599999986pt/> are **flattened** representations of the original objects in 2D or 3D.  They must therefore each be flattened according to the same procedure, such as   `E_vec = E(:)`   in matlab.
 
-**NOTE 2:** If we have $M$ x $N$ grids in our simulation, the matrix $\hat{A}$ is of dimension ($MN$) x ($MN$).  If M and N are small (lets say 100), then we still will have a matrix $\hat{A}$ with 10,000 x 10,000 = 100,000,000 elements, which is getting quite large! (especially for the next step..)  Therefore, we need to make sure that we construct $\hat{A}$ as a **sparse** matrix
+**NOTE 2:** If we have <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/fb97d38bcc19230b0acd442e17db879c.svg?invert_in_darkmode" align=middle width=17.73973739999999pt height=22.465723500000017pt/> x <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/f9c4988898e7f532b9f826a75014ed3c.svg?invert_in_darkmode" align=middle width=14.99998994999999pt height=22.465723500000017pt/> grids in our simulation, the matrix <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/6c9593d82fc74cb581359f835452e977.svg?invert_in_darkmode" align=middle width=12.55717814999999pt height=31.141535699999984pt/> is of dimension (<img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/38c940e42b166347e72f8cc587bd9732.svg?invert_in_darkmode" align=middle width=32.73970589999999pt height=22.465723500000017pt/>) x (<img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/38c940e42b166347e72f8cc587bd9732.svg?invert_in_darkmode" align=middle width=32.73970589999999pt height=22.465723500000017pt/>).  If M and N are small (lets say 100), then we still will have a matrix <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/6c9593d82fc74cb581359f835452e977.svg?invert_in_darkmode" align=middle width=12.55717814999999pt height=31.141535699999984pt/> with 10,000 x 10,000 = 100,000,000 elements, which is getting quite large! (especially for the next step..)  Therefore, we need to make sure that we construct <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/6c9593d82fc74cb581359f835452e977.svg?invert_in_darkmode" align=middle width=12.55717814999999pt height=31.141535699999984pt/> as a **sparse** matrix
 
 Now that we understand how to set up our simulation, we must solve for the fields.  
 
 This can be written simply as:
 
-$$ \mathbf{E} = \hat{A}^{-1}\mathbf{b}$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/25e67b39243ba12ba0934ab88ed9481b.svg?invert_in_darkmode" align=middle width=74.81712975pt height=15.570767849999998pt/></p>
 
 Thankfully this can be done very simply through a direct, sparse linear solver:
 * MATLAB:  `E = A\b`
 * Python:  `E = scipy.sparse.linalg.spsolve(A,b)`
 
-These numerical packages will take care of the work for you.  **DO NOT** solve for $A^{-1}$ directly, for instance by doing `E = inv(A)*b` as this is highly inefficient.  
+These numerical packages will take care of the work for you.  **DO NOT** solve for <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/471d65ea6d03a4f1ea1dd8be931d26c9.svg?invert_in_darkmode" align=middle width=29.155366349999987pt height=26.76175259999998pt/> directly, for instance by doing `E = inv(A)*b` as this is highly inefficient.  
 
 Also, Since these built-in solvers perform LU decomposition on A, instead of storing `inv(A)`, you may save this factorization for later solves with different sources if you desire.
 
@@ -171,9 +171,9 @@ ax3 = f.add_subplot(133)
 Ezplt = ax1.imshow(np.real(Ez[0]).T, cmap = "bwr", vmin = -3e-7, vmax = 3e-7)
 Hxplt = ax2.imshow(np.real(Hx[0]).T, cmap = "bwr", vmin = -1e-9, vmax = 1e-9)
 Hyplt = ax3.imshow(np.real(Hy[0]).T, cmap = "bwr", vmin = -1e-9, vmax = 1e-9)
-ax1.set_title('$\mathcal{R}\{ E_z \}$')
-ax2.set_title('$\mathcal{R}\{ H_x \}$')
-ax3.set_title('$\mathcal{R}\{ H_y \}$')
+ax1.set_title('<img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/10c7164b6171fa3aa7b7bd2a097a4a88.svg?invert_in_darkmode" align=middle width=50.078975099999994pt height=24.65753399999998pt/>')
+ax2.set_title('<img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/4da4ebe17457e22dcded1325e8c25fc7.svg?invert_in_darkmode" align=middle width=52.310654549999995pt height=24.65753399999998pt/>')
+ax3.set_title('<img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/58b40c1917c246b89cc37fe7eb3479da.svg?invert_in_darkmode" align=middle width=51.935891699999985pt height=24.65753399999998pt/>')
 ax1.set_xlabel('x points')
 ax2.set_xlabel('x points')
 ax3.set_xlabel('x points')
@@ -183,82 +183,82 @@ plt.show()
 
 ## AVM
 
-To summarize, with FDFD, we first construct our $\hat{A}$ matrix
+To summarize, with FDFD, we first construct our <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/6c9593d82fc74cb581359f835452e977.svg?invert_in_darkmode" align=middle width=12.55717814999999pt height=31.141535699999984pt/> matrix
 
-$$ \hat{A} = \frac{1}{\mu_0}\nabla \times \nabla \times - \omega^2\epsilon_0 \epsilon_r(r) $$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/02c00f0e8efa35df9ef8a3b1111f5c34.svg?invert_in_darkmode" align=middle width=202.68945839999998pt height=36.1865163pt/></p>
 
 and our source vector
 
-$$ \mathbf{b} = i\omega J(r)$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/bbd6ae6d77a52ea8149a8e70f69cbceb.svg?invert_in_darkmode" align=middle width=80.259729pt height=16.438356pt/></p>
 
 and then we solve for the electric fields using a linear solve:
 
-$$ \mathbf{E} = \hat{A}^{-1}\mathbf{b}$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/25e67b39243ba12ba0934ab88ed9481b.svg?invert_in_darkmode" align=middle width=74.81712975pt height=15.570767849999998pt/></p>
 
-However, in many optimization problems, we would like to evaluate an 'objective function' that depends on the electric field distribution, we will call this $J(\mathbf{E})$ for now.
+However, in many optimization problems, we would like to evaluate an 'objective function' that depends on the electric field distribution, we will call this <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/c81a901e4aa9367d2060c067eab671cb.svg?invert_in_darkmode" align=middle width=35.90180549999999pt height=24.65753399999998pt/> for now.
 
-If we are doing optimization, we would like $J$ to be a real-valued scalar quantity that we can either minimize or maximize with respect to the degrees of freedom in our system.
+If we are doing optimization, we would like <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/8eb543f68dac24748e65e2e4c5fc968c.svg?invert_in_darkmode" align=middle width=10.69635434999999pt height=22.465723500000017pt/> to be a real-valued scalar quantity that we can either minimize or maximize with respect to the degrees of freedom in our system.
 
-For sake of argument, lets say we would like to minimize $J$ with respect to the relative permittivity at position $r'$ in our system.  
+For sake of argument, lets say we would like to minimize <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/8eb543f68dac24748e65e2e4c5fc968c.svg?invert_in_darkmode" align=middle width=10.69635434999999pt height=22.465723500000017pt/> with respect to the relative permittivity at position <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/37bb59bcb3c8c723506af9f3796c92c5.svg?invert_in_darkmode" align=middle width=11.66291774999999pt height=24.7161288pt/> in our system.  
 
-What we would like to do is to compute the derivative of $J$ with respect to $\epsilon_r(r')$.  Let's write this out:
+What we would like to do is to compute the derivative of <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/8eb543f68dac24748e65e2e4c5fc968c.svg?invert_in_darkmode" align=middle width=10.69635434999999pt height=22.465723500000017pt/> with respect to <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/eaed87c3f3701cdac038d20526d76dbc.svg?invert_in_darkmode" align=middle width=39.22197509999999pt height=24.7161288pt/>.  Let's write this out:
 
-$$ \frac{dJ}{d\epsilon_r(r')}  = \frac{\partial J}{\partial \mathbf{E}}\frac{d \mathbf{E}}{d\epsilon_r(r')} + \frac{\partial J}{\partial \mathbf{E}*}\frac{d \mathbf{E}*}{d\epsilon_r(r')} $$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/0b3209a0c05fc522250eae529c669126.svg?invert_in_darkmode" align=middle width=253.46335905pt height=37.9216761pt/></p>
 
-where we have assumed $J$ does not depend explicitly on the permittivity distribution.
+where we have assumed <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/8eb543f68dac24748e65e2e4c5fc968c.svg?invert_in_darkmode" align=middle width=10.69635434999999pt height=22.465723500000017pt/> does not depend explicitly on the permittivity distribution.
 
-Because we assume both $J$ and $\epsilon_r(r')$ are real, this becomes:
+Because we assume both <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/8eb543f68dac24748e65e2e4c5fc968c.svg?invert_in_darkmode" align=middle width=10.69635434999999pt height=22.465723500000017pt/> and <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/eaed87c3f3701cdac038d20526d76dbc.svg?invert_in_darkmode" align=middle width=39.22197509999999pt height=24.7161288pt/> are real, this becomes:
 
-$$ \frac{dJ}{d\epsilon_r(r')}  = \mathcal{R}\left\{ 2 \frac{\partial J}{\partial \mathbf{E}} \frac{d \mathbf{E}}{d\epsilon_r(r')} \right\} $$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/cd69608c8ca5f026dece521e60bd907d.svg?invert_in_darkmode" align=middle width=198.94483785pt height=39.452455349999994pt/></p>
 
-As a sanity check, $\frac{\partial J}{\partial \mathbf{E}}$ is a row vector, which only depends on the choice of objective function and $\frac{d \mathbf{E}}{d\epsilon_r(r')}$ is a vector that we will evaluate by examining our FDFD simulation.  Therefore, our $\frac{dJ}{d\epsilon_r(r')}$ quantity is a real-valued scalar, as desired.
+As a sanity check, <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/e95fb685fb668cfa7b7cd488af28c56a.svg?invert_in_darkmode" align=middle width=17.44463325pt height=28.92634470000001pt/> is a row vector, which only depends on the choice of objective function and <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/f7e3a84138a66e3c330aa18b0a39b474.svg?invert_in_darkmode" align=middle width=40.12470825pt height=28.92634470000001pt/> is a vector that we will evaluate by examining our FDFD simulation.  Therefore, our <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/a52e996f41dc8914a482f1be02842fa6.svg?invert_in_darkmode" align=middle width=40.12470825pt height=28.92634470000001pt/> quantity is a real-valued scalar, as desired.
 
-To evaluate $\frac{d \mathbf{E}}{d\epsilon_r(r')}$, we do a bit of calculus
+To evaluate <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/f7e3a84138a66e3c330aa18b0a39b474.svg?invert_in_darkmode" align=middle width=40.12470825pt height=28.92634470000001pt/>, we do a bit of calculus
 
-$$ \frac{d \mathbf{E}}{d\epsilon_r(r')} = \frac{d \left(\hat{A}^{-1}\mathbf{b}\right)}{d\epsilon_r(r')}$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/53867c199b29b9c968cf693a6e1f704b.svg?invert_in_darkmode" align=middle width=145.0505595pt height=51.3856596pt/></p>
 
-$$ = -\hat{A}^{-1} \frac{d \hat{A}}{d\epsilon_r(r')} \hat{A}^{-1}\mathbf{b}$$
-where we have used the fact that $\mathbf{b}$ does not depend on $\epsilon_r$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/5108019aed7d5f6cccae29a491ba83bf.svg?invert_in_darkmode" align=middle width=152.3167734pt height=42.07691565pt/></p>
+where we have used the fact that <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/a10ec92d13e76a02b538967f6b90b345.svg?invert_in_darkmode" align=middle width=10.502226899999991pt height=22.831056599999986pt/> does not depend on <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/67f1777f6dfce783fa8fe87d2ab5f12f.svg?invert_in_darkmode" align=middle width=13.12984034999999pt height=14.15524440000002pt/>
 
-Noticing that $\hat{A}^{-1}\mathbf{b} = \mathbf{E}$ and resubstituting, we arrive at:
+Noticing that <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/8d1284da3bbac027015a7100c7401424.svg?invert_in_darkmode" align=middle width=74.81712974999999pt height=31.141535699999984pt/> and resubstituting, we arrive at:
 
-$$ \frac{d \mathbf{E}}{d\epsilon_r(r')} = -\hat{A}^{-1} \frac{d \hat{A}}{d\epsilon_r(r')} \mathbf{E}$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/e1a42bf28eb24d144b3dbfa41467fd60.svg?invert_in_darkmode" align=middle width=178.5738999pt height=42.07691565pt/></p>
 
 Finally, in our original equation now, we have:
 
-$$ \frac{dJ}{d\epsilon_r(r')}  = \mathcal{R}\left\{ -2 \frac{\partial J}{\partial \mathbf{E}} \hat{A}^{-1} \frac{d \hat{A}}{d\epsilon_r(r')} \mathbf{E} \right\} $$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/7d0011f1a294cb0fe7046e0a75964619.svg?invert_in_darkmode" align=middle width=255.9540984pt height=49.315569599999996pt/></p>
 
-Because of reciprocity, we are guarenteed that $\hat{A}^T = \hat{A}$ and $\hat{A}^{-T} = \hat{A}^{-1}$.  Thus, we can group the terms on the left of this equation.
+Because of reciprocity, we are guarenteed that <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/ca2186b1af0b0774d3347edbd138bc1b.svg?invert_in_darkmode" align=middle width=57.15919439999999pt height=31.141535699999984pt/> and <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/9c4a3818c321d08df1fb0e62b1aafd7b.svg?invert_in_darkmode" align=middle width=84.03137984999998pt height=31.141535699999984pt/>.  Thus, we can group the terms on the left of this equation.
 
-$$\mathbf{E}_{aj}^T \equiv -2 \frac{\partial J}{\partial \mathbf{E}} \hat{A}^{-1}$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/240016a67121ed2c59cbe797b876cd80.svg?invert_in_darkmode" align=middle width=124.56005924999998pt height=33.81208709999999pt/></p>
 
 or, to write in a different way (taking transpose)
 
-$$\mathbf{E}_{aj} \equiv \hat{A}^{-1} \left( -2 \frac{\partial J}{\partial \mathbf{E}}^T  \right)$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/f60357fa936f2acb9a4c306e058352f0.svg?invert_in_darkmode" align=middle width=164.50467824999998pt height=49.315569599999996pt/></p>
 
-We then notice that $ \mathbf{E}_{aj}$ is the field solution that we get from solving
+We then notice that <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/a4bf71e9ddb65afc4f6f25a7169def2c.svg?invert_in_darkmode" align=middle width=25.65491279999999pt height=22.55708729999998pt/> is the field solution that we get from solving
 
-$$\hat{A} \mathbf{E}_{aj} = -2 \frac{\partial J}{\partial \mathbf{E}}^T$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/19d29c1aa32443e978c2385439c16537.svg?invert_in_darkmode" align=middle width=117.26720445pt height=37.61121705pt/></p>
 
-Which is a simulation with the same system ($\hat{A}$) but now instead of a source $\mathbf{b}$, the source is $-2 \frac{\partial J}{\partial \mathbf{E}}^T$, which depends on our objective function.  This field solution is what is called the **adjoint** field and the equation above for solving for it is the **adjoint** problem.
+Which is a simulation with the same system (<img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/6c9593d82fc74cb581359f835452e977.svg?invert_in_darkmode" align=middle width=12.55717814999999pt height=31.141535699999984pt/>) but now instead of a source <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/a10ec92d13e76a02b538967f6b90b345.svg?invert_in_darkmode" align=middle width=10.502226899999991pt height=22.831056599999986pt/>, the source is <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/a5d4ed94e28ef9eb48db780830ac8bb2.svg?invert_in_darkmode" align=middle width=51.928164749999986pt height=36.5245749pt/>, which depends on our objective function.  This field solution is what is called the **adjoint** field and the equation above for solving for it is the **adjoint** problem.
 
-Thus, we can write the change in objective function with respect to the permittivity at point $r'$ as the overlap between two electric fields $\mathbf{E}$ and $\mathbf{E}_{aj}$:
+Thus, we can write the change in objective function with respect to the permittivity at point <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/37bb59bcb3c8c723506af9f3796c92c5.svg?invert_in_darkmode" align=middle width=11.66291774999999pt height=24.7161288pt/> as the overlap between two electric fields <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/ae48dff45ab57dda34b441bc7904377a.svg?invert_in_darkmode" align=middle width=12.420021899999991pt height=22.55708729999998pt/> and <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/a43695c3016bb266352f27fe8c0ee3c5.svg?invert_in_darkmode" align=middle width=25.65491279999999pt height=22.55708729999998pt/>:
 
-$$ \frac{dJ}{d\epsilon_r(r')}  = \mathcal{R}\left\{ \mathbf{E}_{aj}^T \frac{d \hat{A}}{d\epsilon_r(r')} \mathbf{E} \right\} $$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/a8fdcc36676e10ff6ade4126b5e49d46.svg?invert_in_darkmode" align=middle width=205.44339254999997pt height=49.315569599999996pt/></p>
 
-The matrix $\frac{d \hat{A}}{d\epsilon_r(r')}$ can be evaluated simply by inspecting the form of $\hat{A}$, since $\hat{A}$ contains a matrix with $\epsilon_r(r)$ along the diagonal, when we differentiate this matrix with respect to $\epsilon_r(r')$ it will give a matrix where there is $-\omega^2\epsilon_0$ along the diagonal where $r' = r$ and 0 everywhere else. 
+The matrix <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/daca67ba5a0eb1ab33a6f79f780ca24e.svg?invert_in_darkmode" align=middle width=40.12470825pt height=34.74372989999999pt/> can be evaluated simply by inspecting the form of <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/6c9593d82fc74cb581359f835452e977.svg?invert_in_darkmode" align=middle width=12.55717814999999pt height=31.141535699999984pt/>, since <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/6c9593d82fc74cb581359f835452e977.svg?invert_in_darkmode" align=middle width=12.55717814999999pt height=31.141535699999984pt/> contains a matrix with <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/179588e16e1fabb29de4ad34840ef549.svg?invert_in_darkmode" align=middle width=34.610099699999985pt height=24.65753399999998pt/> along the diagonal, when we differentiate this matrix with respect to <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/eaed87c3f3701cdac038d20526d76dbc.svg?invert_in_darkmode" align=middle width=39.22197509999999pt height=24.7161288pt/> it will give a matrix where there is <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/ea5e523e3737f2f3a23cd7d1d52e958f.svg?invert_in_darkmode" align=middle width=44.206737299999986pt height=26.76175259999998pt/> along the diagonal where <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/c5a179081988c08b3bec25ddd4f43c52.svg?invert_in_darkmode" align=middle width=42.27541559999999pt height=24.7161288pt/> and 0 everywhere else. 
 
-We can call this matrix $-\omega^2\epsilon_0\hat{\delta}_{r,r'}$ where it is like a kronecker delta.
+We can call this matrix <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/b5c9a6ab927de9a9ecdf6f3f7ca38d6d.svg?invert_in_darkmode" align=middle width=72.07026914999999pt height=31.50689519999998pt/> where it is like a kronecker delta.
 
 Inserting this, we get some nice simplification of the expression for the derivative, which now only depends on the orginal and the adjoint fields as.
 
-$$ \frac{dJ}{d\epsilon_r(r')}  = -\omega^2\epsilon_0\mathcal{R}\left\{ \mathbf{E}_{aj}^T \hat{\delta}_{r,r'} \mathbf{E} \right\} = -\omega^2\epsilon_0\mathcal{R}\left\{ \mathbf{E}(r') \mathbf{E}_{aj}(r') \right\} $$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/bad47b3760b8d8b2f97f45b9ff4f01f2.svg?invert_in_darkmode" align=middle width=412.36133565pt height=37.9216761pt/></p>
 
-The real power of this expression is that if we want to now look at the change in our objective function with respect to the permittivity at any general point, $r$, we can reuse our field solutions 
+The real power of this expression is that if we want to now look at the change in our objective function with respect to the permittivity at any general point, <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/89f2e0d2d24bcf44db73aab8fc03252c.svg?invert_in_darkmode" align=middle width=7.87295519999999pt height=14.15524440000002pt/>, we can reuse our field solutions 
 
-$$ \frac{dJ}{d\epsilon_r(r)}  =  -\omega^2\epsilon_0\mathcal{R}\left\{ \mathbf{E}(r) \mathbf{E}_{aj}(r) \right\} $$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/1a19fb8cf67b211545480297c2b99503.svg?invert_in_darkmode" align=middle width=225.4081302pt height=37.9216761pt/></p>
 
-In this way, we are able to get the change in objective function with respect to **each** pixel in our permittivity distribution **at once** all by doing two field simulations and using the equation above.  Even if we have tons of pixels, once we solve for $\mathbf{E}_{aj}$, we have our derivatives.
+In this way, we are able to get the change in objective function with respect to **each** pixel in our permittivity distribution **at once** all by doing two field simulations and using the equation above.  Even if we have tons of pixels, once we solve for <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/a43695c3016bb266352f27fe8c0ee3c5.svg?invert_in_darkmode" align=middle width=25.65491279999999pt height=22.55708729999998pt/>, we have our derivatives.
 
 
 ## Example
@@ -270,17 +270,17 @@ Let's say that we're interested in the same situation as before (point source ne
 <img src="./img/Objective.png" width="500" />
 
 
-To simplify the problem, we may write down a vector $\boldsymbol{\eta}$ that gives 1 at that target position and 0 elsewhere.
+To simplify the problem, we may write down a vector <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/66fa5ab6b878d0218ecc58a66127814a.svg?invert_in_darkmode" align=middle width=10.471830599999988pt height=14.611878600000017pt/> that gives 1 at that target position and 0 elsewhere.
 
 Now, we can express an objective function as 
 
-$$J(\mathbf{E}) = \left|\boldsymbol{\eta}^T \mathbf{E}\right|^2 = \left(\boldsymbol{\eta}^T \mathbf{E} \right)^*\left(\boldsymbol{\eta}^T \mathbf{E}\right)$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/b16e453e80263741e1ac503dbff65285.svg?invert_in_darkmode" align=middle width=238.24663334999997pt height=23.755462499999997pt/></p>
 
 To construct our adjoint source, one can show
 
-$$\hat{A} \mathbf{E}_{aj} = -2 \frac{\partial J}{\partial \mathbf{E}}^T = -2 \left(\boldsymbol{\eta}^T \mathbf{E} \right)^* \boldsymbol{\eta}$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/3f42666685fd40c1d38fcc9ee6f81897.svg?invert_in_darkmode" align=middle width=232.83560354999997pt height=37.61121705pt/></p>
 
-Therefore, the source for our adjoint field is at the probe location, $\boldsymbol{\eta}$, and has a (complex-valued) amplitude that is -2 times the complex conjugate of the forward field evaluated at the proble location.
+Therefore, the source for our adjoint field is at the probe location, <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/66fa5ab6b878d0218ecc58a66127814a.svg?invert_in_darkmode" align=middle width=10.471830599999988pt height=14.611878600000017pt/>, and has a (complex-valued) amplitude that is -2 times the complex conjugate of the forward field evaluated at the proble location.
 
 We can easily code this up with our FDFD solver:
 
@@ -304,9 +304,9 @@ ax3 = f.add_subplot(133)
 Ezplt = ax1.imshow(np.real(Ez_aj[0]).T, cmap = "bwr")#, vmin = -2e-11, vmax = 2e-11)
 Hxplt = ax2.imshow(np.real(Hx_aj[0]).T, cmap = "bwr")#, vmin = -5e-14, vmax = 5e-14)
 Hyplt = ax3.imshow(np.real(Hy_aj[0]).T, cmap = "bwr")#, vmin = -5e-14, vmax = 5e-14)
-ax1.set_title('adjoint $\mathcal{R}\{ E_z \}$')
-ax2.set_title('adjoint $\mathcal{R}\{ H_x \}$')
-ax3.set_title('adjoint $\mathcal{R}\{ H_y \}$')
+ax1.set_title('adjoint <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/10c7164b6171fa3aa7b7bd2a097a4a88.svg?invert_in_darkmode" align=middle width=50.078975099999994pt height=24.65753399999998pt/>')
+ax2.set_title('adjoint <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/4da4ebe17457e22dcded1325e8c25fc7.svg?invert_in_darkmode" align=middle width=52.310654549999995pt height=24.65753399999998pt/>')
+ax3.set_title('adjoint <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/58b40c1917c246b89cc37fe7eb3479da.svg?invert_in_darkmode" align=middle width=51.935891699999985pt height=24.65753399999998pt/>')
 ax1.set_xlabel('x points')
 ax2.set_xlabel('x points')
 ax3.set_xlabel('x points')
@@ -324,26 +324,26 @@ And now, the sensitivity map can be plotted.
 f = plt.figure(figsize=(6,5))
 max_abs = np.max(np.max(np.abs(Ez_aj[0]*Ez[0])))
 Ezplt = plt.imshow(np.real(Ez_aj[0]*Ez[0]/max_abs).T, cmap = "bwr", vmin = -1/2, vmax = 1/2)
-plt.title('dJ/d$\epsilon$ =  $\mathcal{R}\{ E \cdot E_{aj} \}$')
+plt.title('dJ/d<img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/7ccca27b5ccc533a2dd72dc6fa28ed84.svg?invert_in_darkmode" align=middle width=6.672392099999992pt height=14.15524440000002pt/> =  <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/f4f3931463524e58bc8d844c0d9a4423.svg?invert_in_darkmode" align=middle width=81.51564464999998pt height=24.65753399999998pt/>')
 plt.xlabel('x points')
 plt.ylabel('y points')
 plt.colorbar()
 plt.show()
 ```
 
-This shows us how the objective function ($J$) will change when we change the relative permittivity of each point in the domain.
+This shows us how the objective function (<img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/8eb543f68dac24748e65e2e4c5fc968c.svg?invert_in_darkmode" align=middle width=10.69635434999999pt height=22.465723500000017pt/>) will change when we change the relative permittivity of each point in the domain.
 
 ## Frequency Sweep
 
 Your adjoint sensitivity should be consistent with that found by taking a numerical derivative, where the permittivity is manually changed by some small amount and the change in objective function is measured.
 
-$$ \frac{dJ}{d\epsilon_r(r)}^{(num.)} = \frac{J(\epsilon_r(r)+\Delta) - J(\epsilon_r(r)-\Delta)}{2\Delta}$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/d0864204e664550bb53f9cbf6de3df54.svg?invert_in_darkmode" align=middle width=315.44658915pt height=42.4879191pt/></p>
 
 To do this, we'll compare AVM with numerical derivative when we scan the frequency.  For example, let's take our degree of fredom to be the permittivity of the entire box.
 
-In this case, our total objective function can be evaluated by just summing over $\mathbf{E}$ and $\mathbf{E}_{aj}$ over the box location.
+In this case, our total objective function can be evaluated by just summing over <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/ae48dff45ab57dda34b441bc7904377a.svg?invert_in_darkmode" align=middle width=12.420021899999991pt height=22.55708729999998pt/> and <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/a43695c3016bb266352f27fe8c0ee3c5.svg?invert_in_darkmode" align=middle width=25.65491279999999pt height=22.55708729999998pt/> over the box location.
 
-$$ \frac{dJ}{d\epsilon_{box}}  =  -k_0^2\sum_{r \in box}\mathcal{R}\left\{ \mathbf{E}(r) \mathbf{E}_{aj}(r) \right\} $$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/fc2ac7a3b327d29255f421f64459b0f9.svg?invert_in_darkmode" align=middle width=242.74165079999997pt height=43.17873615pt/></p>
 
 This will take a minute or so
 
@@ -403,8 +403,8 @@ for index, w in enumerate(freqs):
 # Plot the results (should be perfect agreement)
 num = plt.plot([f/1e12/2/np.pi for f in freqs],dJde_numerical)
 avm = plt.plot([f/1e12/2/np.pi for f in freqs],dJde_AVM,'o')
-plt.xlabel('$\omega$ (2$\pi$ THz)')
-plt.ylabel('sensitivity (dJ/d$\epsilon_{box}$)')
+plt.xlabel('<img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/ae4fb5973f393577570881fc24fc2054.svg?invert_in_darkmode" align=middle width=10.82192594999999pt height=14.15524440000002pt/> (2<img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/f30fdded685c83b0e7b446aa9c9aa120.svg?invert_in_darkmode" align=middle width=9.96010619999999pt height=14.15524440000002pt/> THz)')
+plt.ylabel('sensitivity (dJ/d<img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/d824f57c81e410d76c1b5a4c63b59d2d.svg?invert_in_darkmode" align=middle width=26.39620334999999pt height=14.15524440000002pt/>)')
 plt.legend(['numerical derivative', 'AVM derivative'])
 plt.show()
 ```
@@ -417,19 +417,19 @@ Let's take the same situation as before, but now design the central square regio
 
 We do this by first computing:
 
-$$ \frac{dJ}{d\epsilon_r(r)} $$ for each $r$ in our design region using adjoints.
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/29498c3e0a4db608f52f3f352fc6fa84.svg?invert_in_darkmode" align=middle width=43.16606415pt height=37.9216761pt/></p> for each <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/89f2e0d2d24bcf44db73aab8fc03252c.svg?invert_in_darkmode" align=middle width=7.87295519999999pt height=14.15524440000002pt/> in our design region using adjoints.
 
 Then, we update the permittivity in that region by a simple gradient ascent update rule:
 
-$$\epsilon_r(r) := \epsilon_r(r) + \alpha \frac{dJ}{d\epsilon_r(r)}$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/2948f557c03a6c76244a864e20b33a7e.svg?invert_in_darkmode" align=middle width=171.51040665pt height=37.9216761pt/></p>
 
-Where $\alpha$ is some small step size.
+Where <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/c745b9b57c145ec5577b82542b2df546.svg?invert_in_darkmode" align=middle width=10.57650494999999pt height=14.15524440000002pt/> is some small step size.
 
 **NOTE**: the original and adjoint fields can be stored to compute the derivative with respect to the permittivity in each pixel.  One can do this either with a for loop, or (better) by just directly element-wise multiplying the fields together.
 
 We continue this process until we have converged on a structure.
 
-If $\epsilon_r(r)$ either gets smaller than 1 or larger than some cutoff during our iterations, we set them back inside the range.
+If <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/179588e16e1fabb29de4ad34840ef549.svg?invert_in_darkmode" align=middle width=34.610099699999985pt height=24.65753399999998pt/> either gets smaller than 1 or larger than some cutoff during our iterations, we set them back inside the range.
 
 
 ```python
@@ -503,24 +503,24 @@ For a very detailed explanation please read my [paper](https://www.osapublishing
 
 The code used to make the figures is also given [here](https://github.com/twhughes/DLA-Structure-Optimization) and you can read the documentation in README.md
 
-**NOTE:** The FDFD convention and coordinates are different in the paper than here.  In the paper, the electron moves in the $\hat{x}$ direction and the constant in front of the adjoint sensitivity is different.
+**NOTE:** The FDFD convention and coordinates are different in the paper than here.  In the paper, the electron moves in the <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/f84e86b97e20e45cc17d297dc794b3e8.svg?invert_in_darkmode" align=middle width=9.39498779999999pt height=22.831056599999986pt/> direction and the constant in front of the adjoint sensitivity is different.
 
 For accelerators, we take a simple case where we want to maximize the acceleration gradient of a charged particle moving along the central gap of a DLA structure.
 
 In the frequency domain, we can write the acceleration gradient (our objective function) as
-$$G(\mathbf{E}) = \frac{1}{\beta\lambda_0}\mathcal{R}\left\{ \exp{(i\phi_0)} \int_0^{\beta\lambda_0} dz \exp{\left(i \frac{2\pi z}{\beta\lambda_0}\right)}E_z(x=0,y=0,z) \right\}$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/1c74fb14891285112de99c0ddce86bcd.svg?invert_in_darkmode" align=middle width=484.99340505000004pt height=49.315569599999996pt/></p>
 
-Taking $\phi_0 = 0$ as an arbitrary choice, this can further be expressed as the inner product between $\mathbf{E}$ and $\boldsymbol{\eta}$ where
+Taking <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/a64a590422510056485cda8e72ce9a95.svg?invert_in_darkmode" align=middle width=47.30584319999999pt height=22.831056599999986pt/> as an arbitrary choice, this can further be expressed as the inner product between <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/ae48dff45ab57dda34b441bc7904377a.svg?invert_in_darkmode" align=middle width=12.420021899999991pt height=22.55708729999998pt/> and <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/66fa5ab6b878d0218ecc58a66127814a.svg?invert_in_darkmode" align=middle width=10.471830599999988pt height=14.611878600000017pt/> where
 
-$$ G = \mathcal{R}\left\{ \int_0^{\beta\lambda_0} dz \int_{-\infty}^{\infty} dx \int_{-\infty}^{\infty} dy ~~~\mathbf{E} \cdot \boldsymbol{\eta} \right\}$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/1f8b2fdcf5d0265ebdd5d7ebf52c382f.svg?invert_in_darkmode" align=middle width=301.1625507pt height=49.315569599999996pt/></p>
 
-$$ \boldsymbol{\eta}(x,y,z) \equiv \frac{1}{\beta\lambda_0} \exp{\left(i \frac{2\pi z}{\beta\lambda_0}\right)} \delta(x)\delta(y)\hat{z}$$
+<p align="center"><img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/16e546a7883ff5bf28569b3c2d57c96e.svg?invert_in_darkmode" align=middle width=277.48266809999996pt height=39.452455349999994pt/></p>
 
-Thus, by following the procedure above, we may identify the adjoint source as $-\boldsymbol{\eta}$ and the same techniques can be applied.
+Thus, by following the procedure above, we may identify the adjoint source as <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/ff9487827c7a09c96347b2017d0d463b.svg?invert_in_darkmode" align=middle width=23.25726314999999pt height=19.1781018pt/> and the same techniques can be applied.
 
-In this case, the current source for the adjoint field corresponds to an electric current, $J_z$ at the center of the gap with an $\exp{\left(i \frac{2\pi z}{\beta\lambda_0}\right)}$ dependence.
+In this case, the current source for the adjoint field corresponds to an electric current, <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/dcc122b1d1f1c034ffc1e33654a003d8.svg?invert_in_darkmode" align=middle width=15.86765564999999pt height=22.465723500000017pt/> at the center of the gap with an <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/1549b80f29b492db1f0b1e011e91c921.svg?invert_in_darkmode" align=middle width=79.35464624999999pt height=37.80850590000001pt/> dependence.
 
-One can show that this is exactly proportional to the current source of a point particle moving through the center of the gap with speed $\beta \lambda_0$.
+One can show that this is exactly proportional to the current source of a point particle moving through the center of the gap with speed <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/3f7903a2571aab93e88bf15d11268475.svg?invert_in_darkmode" align=middle width=26.307162749999986pt height=22.831056599999986pt/>.
 
 Thus, for maximizing acceleration gradient, the adjoint fields are proportional to the radiation from the electron beam that you are trying to accelerate!
 
@@ -535,13 +535,13 @@ The second requires defining a special, differential approximation to the max fu
 
 ### Other Interesting AVM Applications
 
-- We can use the same analysis as above with objective functions of the same form: $\mathcal{R}\left\{ <\mathbf{E}~|~\boldsymbol{\eta}> \right\}$. For example, now $\boldsymbol{\eta}$ may represent a desired focusing field.
+- We can use the same analysis as above with objective functions of the same form: <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/3e03b84eb83c39d002f66d5921ee9c21.svg?invert_in_darkmode" align=middle width=106.2296631pt height=24.65753399999998pt/>. For example, now <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/66fa5ab6b878d0218ecc58a66127814a.svg?invert_in_darkmode" align=middle width=10.471830599999988pt height=14.611878600000017pt/> may represent a desired focusing field.
 
 - One can also do hybrid approaches, such as maximizing the sum of the accelerating and focusing fields.
 
 - As we show [here](https://arxiv.org/abs/1805.09943), for a system parameterized by optical phase shifters, we can compute how the objective function will change with respect to each phase shifter by summing the adjoint sensitivities over a phase shifter location.
 
-- Furthermore, in [the same work](https://arxiv.org/abs/1805.09943), we also show that the adjoint senstivity can be read out as an intensity measurement in the device by inerfering $\mathbf{E}_{og}$ with $\mathbf{E}_{aj}^*$.
+- Furthermore, in [the same work](https://arxiv.org/abs/1805.09943), we also show that the adjoint senstivity can be read out as an intensity measurement in the device by inerfering <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/5b447d3ce41d3cead29dd174bc04c3a9.svg?invert_in_darkmode" align=middle width=25.73459459999999pt height=22.55708729999998pt/> with <img src="https://rawgit.com/twhughes/AVM_Workshop/None/svgs/ed42a733e2c6667e7d5c634aac3585e6.svg?invert_in_darkmode" align=middle width=25.65491279999999pt height=22.63846199999998pt/>.
 
 ## Conclusion
 
