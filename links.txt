@@ -1,0 +1,3 @@
+The code and notebook are contained here: https://github.com/twhughes/AVM_Workshop
+
+For accelerator applications and matlab versions, see here: https://github.com/twhughes/DLA-Structure-Optimization
