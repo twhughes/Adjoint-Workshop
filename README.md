@@ -5,12 +5,18 @@ This notebook is a live demo explaining the adjoint variable method (AVM) and it
 ## To install dependencies, run
 ```pip install -r requirements.txt```
 
-## To view and play around with the notebook, run
-```jupyter notebook Main.ipynb```
-or
-```jupyter lab Main.ipynb```
-if you have jupyter lab installed
+## To view and play around with the notebook:
 
-Although a full overview and explanation is given in Main.ipynb
+(Click on this link)[https://github.com/twhughes/AVM_Workshop/blob/master/Main.ipynb] to view the notebook.  
+
+If you would like to play with the code, you may run
+
+```jupyter notebook Main.ipynb```
+
+or
+
+```jupyter lab Main.ipynb```
+
+if you have jupyter lab installed
 
 Enjoy!
